@@ -14,7 +14,7 @@ userForm.loginFormCallback = (data) => {
 };
 
 userForm.registerFormCallback = (data) => {
-    const checkLogin = ApiConnector.login((data), response => {
+    const checkLogin = ApiConnector.register((data), response => {
         if (response.success === true) {
             location.reload();
         }

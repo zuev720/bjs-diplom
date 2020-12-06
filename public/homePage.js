@@ -76,8 +76,8 @@ const favoritesWidget = new FavoritesWidget();
 
 ApiConnector.getFavorites(response => {
     if (response.success === true) {
-        ratesBoard.clearTable();
-        ratesBoard.fillTable(response.data);
+        favoritesWidget.clearTable();
+        favoritesWidget.fillTable(response.data);
         moneyManager.updateUsersList(response.data);
     }
 })
@@ -85,10 +85,10 @@ ApiConnector.getFavorites(response => {
 favoritesWidget.addUserCallback = (data) => {
     ApiConnector.addUserToFavorites(data, (response) => {
         if (response.success === true) {
-            moneyManager.setMessage(response.success, 'Пользователь добавлен в избранное!');
+            favoritesWidget.setMessage(response.success, 'Пользователь добавлен в избранное!');
         }
         else {
-            moneyManager.setMessage(response.success, response.error);
+            favoritesWidget.setMessage(response.success, response.error);
         }
     })
 }
@@ -96,10 +96,10 @@ favoritesWidget.addUserCallback = (data) => {
 favoritesWidget.removeUserCallback = (data) => {
     ApiConnector.removeUserFromFavorites(data, (response) => {
         if (response.success === true) {
-            moneyManager.setMessage(response.success, 'Пользователь  успешно удален!');
+            favoritesWidget.setMessage(response.success, 'Пользователь  успешно удален!');
         }
         else {
-            moneyManager.setMessage(response.success, response.error);
+            favoritesWidget.setMessage(response.success, response.error);
         }
     })
 }
