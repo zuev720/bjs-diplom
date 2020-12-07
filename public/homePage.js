@@ -1,5 +1,6 @@
 "use strict";
 
+// exit from account
 const userLogout = new LogoutButton();
 
 userLogout.action = () => {
@@ -11,6 +12,7 @@ userLogout.action = () => {
 };
 
 
+// shows profile
 ApiConnector.current((response) => {
     if (response.success === true) {
         ProfileWidget.showProfile(response.data);
@@ -19,7 +21,7 @@ ApiConnector.current((response) => {
 
 const ratesBoard = new RatesBoard();
 
-
+// get exchange rates
 function getRatesBoard() {
     ApiConnector.getStocks(response => {
         if (response.success === true) {
@@ -36,6 +38,7 @@ setInterval(getRatesBoard, 60000);
 
 const moneyManager = new MoneyManager();
 
+// replenishment of the wallet
 moneyManager.addMoneyCallback = (data) => {
     ApiConnector.addMoney(data, (response) => {
         if (response.success === true) {
@@ -48,6 +51,7 @@ moneyManager.addMoneyCallback = (data) => {
     });
 }
 
+// currency conversion
 moneyManager.conversionMoneyCallback = (data) => {
     ApiConnector.convertMoney(data, (response) => {
         if (response.success === true) {
@@ -60,6 +64,7 @@ moneyManager.conversionMoneyCallback = (data) => {
     })
 }
 
+// money transfer
 moneyManager.sendMoneyCallback = (data) => {
     ApiConnector.transferMoney(data, (response) => {
         if (response.success === true) {
@@ -74,18 +79,24 @@ moneyManager.sendMoneyCallback = (data) => {
 
 const favoritesWidget = new FavoritesWidget();
 
-ApiConnector.getFavorites(response => {
-    if (response.success === true) {
-        favoritesWidget.clearTable();
-        favoritesWidget.fillTable(response.data);
-        moneyManager.updateUsersList(response.data);
-    }
-})
+const getFavorites = () => {
+    ApiConnector.getFavorites(response => {
+        if (response.success === true) {
+            favoritesWidget.clearTable();
+            favoritesWidget.fillTable(response.data);
+            moneyManager.updateUsersList(response.data);
+        }
+    })
+}
+
+getFavorites();
 
 favoritesWidget.addUserCallback = (data) => {
-    ApiConnector.addUserToFavorites(data, (response) => {
+    ApiConnector.addUserToFavorites(data, response => {
         if (response.success === true) {
+            getFavorites();
             favoritesWidget.setMessage(response.success, 'Пользователь добавлен в избранное!');
+
         }
         else {
             favoritesWidget.setMessage(response.success, response.error);
@@ -94,8 +105,9 @@ favoritesWidget.addUserCallback = (data) => {
 }
 
 favoritesWidget.removeUserCallback = (data) => {
-    ApiConnector.removeUserFromFavorites(data, (response) => {
+    ApiConnector.removeUserFromFavorites(data, response => {
         if (response.success === true) {
+            getFavorites();
             favoritesWidget.setMessage(response.success, 'Пользователь  успешно удален!');
         }
         else {
